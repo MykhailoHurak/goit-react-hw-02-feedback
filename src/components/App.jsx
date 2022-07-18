@@ -10,8 +10,7 @@ class App extends React.Component {
 
   options = Object.keys(this.state); // [good, neutral, bad]
   
-  handleFeedbackName = index => {
-    const currentFeedback = this.options[index];
+  handleFeedbackName = currentFeedback => {
     this.setState(previousState => {
       return { [currentFeedback]: previousState[currentFeedback] + 1 };
     });
@@ -19,7 +18,6 @@ class App extends React.Component {
 
   // handleGood = () => {
   //   this.setState((previousState) => {
-  //     console.log(this.options);
   //     return {
   //       good: previousState.good + 1,
   //   }
@@ -43,11 +41,13 @@ class App extends React.Component {
   // };
 
   countTotalFeedback = () => { 
-    return this.state.good + this.state.neutral + this.state.bad;
+    // return this.state.good + this.state.neutral + this.state.bad;
+    return Object.values(this.state).reduce((total, element) => total + element, 0)
    };
 
   countPositiveFeedbackPercentage = () => {
-    return Math.round((this.state.good / (this.state.good + this.state.neutral + this.state.bad)) * 100);
+    const { good } = this.state;
+    return Math.round((good / this.countTotalFeedback()) * 100);
   };
 
   render() {
@@ -60,9 +60,9 @@ class App extends React.Component {
               <button
                 type="button"
                 key={element}
-                onClick={this.handleFeedbackName}
+                onClick={() => this.handleFeedbackName(element)}
                 className={css.Button}
-              >{element.toLocaleUpperCase()}</button>
+              >{element}</button>
             ))}
             {/* <button
               type='button'
@@ -84,12 +84,12 @@ class App extends React.Component {
 
         <div className={css.Section}>
           <h2 className={css.Section__title}>Statistics</h2>
-          <ul>
-            <li>Good: {this.state.good}</li>
-            <li>Neutral: {this.state.neutral}</li>
-            <li>Bad: {this.state.bad}</li>
-            {/* <li>Total: {this.countTotalFeedback()}</li>
-            <li>Positive feedback: {this.countPositiveFeedbackPercentage()}%</li> */}
+          <ul className={css.Statistics__box}>
+            <li className={css.Statistics__item}>Good: <span className={css.Statistics__itemValue}>{this.state.good}</span></li>
+            <li className={css.Statistics__item}>Neutral: <span className={css.Statistics__itemValue}>{this.state.neutral}</span></li>
+            <li className={css.Statistics__item}>Bad: <span className={css.Statistics__itemValue}>{this.state.bad}</span></li>
+            <li className={css.Statistics__item}>Total: <span className={css.Statistics__itemValue}>{this.countTotalFeedback()}</span></li>
+            <li className={css.Statistics__item}>Positive feedback: <span className={css.Statistics__itemValue}>{this.countPositiveFeedbackPercentage()}%</span></li>
           </ul>
         </div>
       </div>
